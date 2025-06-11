@@ -1,0 +1,307 @@
+# 0.0 Set up the environment, clean it and set working directory to the code path
+rm(list = ls())
+rstudioapi::getActiveDocumentContext
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+# 1.0 Import functions and packages
+library(purrr)
+src_path <- c("../../../../src/utils/")             
+source_files <- list(
+  "funcs.R",
+  "constants_final.R",
+  "import_data.R"
+)
+map(paste0(src_path, source_files), source)
+ipak(packages)
+`%!in%` = Negate(`%in%`)
+
+
+# 2.0 Define constants
+country <- 'joint'
+data_type <- 'Verifiability'
+#list_stages <- list('stage1_2', 'stage3_4', 'stage5_6')
+list_types <- list('', 'log_', 'arc_')
+file_code <- 'baseline_next_nbase0'
+ini <- '../../../../data/04-analysis/joint/'
+
+
+
+stage = 'stage1_2'
+  # 3.0 Import data and manipulate
+  df <- get_analysis_ver_final_winsor(stage = 'stage1_2', batches = 'b1b2',
+                                      initial_path = '../../../../')
+  df <- df |> filter(n_posts_base>0)
+  for (type in list_types){
+    
+    aux <- paste0(type, aux_v, '_base')
+    
+    # 4.0 Run original estimates
+    aux_data <- df[aux]
+    lm_list_ols <- list()
+    count <- 1
+    for (x in aux) {
+      fmla1 <- as.formula(paste0(x, "~ total_treated | total_influencers"))
+      nam1 <- paste("lm_", count, "_ols", sep = "")
+      assign(nam1, feols(fmla1, data = df))
+      coefs <- data.frame(coeftable(get(nam1, envir = globalenv()))) |> 
+        select(Estimate)
+      names(coefs) <- paste0(x)
+      coefs <- cbind('treatment' = rownames(coefs), coefs) |>
+        filter(treatment != paste0(x, '_base'))
+      rownames(coefs) <- 1:nrow(coefs)
+      lm_list_ols[[count]] <- coefs
+      count <- count + 1
+    }
+    coefs_all <- lm_list_ols %>% 
+      reduce(left_join, by = "treatment")
+    
+    # Build matrix
+    ver_rt <- coefs_all %>% 
+      select(ends_with(aux[1]))
+    ver_rt <- ver_rt[1,]
+    
+    true_rt <- coefs_all %>% 
+      select(ends_with(aux[2]))
+    true_rt <- true_rt[1,]
+    
+    fake_rt <- coefs_all %>% 
+      select(ends_with(aux[3]))
+    fake_rt <- fake_rt[1,]
+    
+    n_posts_rt <- coefs_all %>% 
+      select(ends_with(aux[4]))
+    n_posts_rt <- n_posts_rt[1,]
+    
+    ver_no_rt <- coefs_all %>% 
+      select(ends_with(aux[5]))
+    ver_no_rt <- ver_no_rt[1,]
+    
+    true_no_rt <- coefs_all %>% 
+      select(ends_with(aux[6]))
+    true_no_rt <- true_no_rt[1,]
+    
+    fake_no_rt <- coefs_all %>% 
+      select(ends_with(aux[7]))
+    fake_no_rt <- fake_no_rt[1,]
+    
+    n_posts_no_rt <- coefs_all %>% 
+      select(ends_with(aux[8]))
+    n_posts_no_rt <- n_posts_no_rt[1,]
+    
+    coefs_perm <- data.frame(ver_rt, true_rt, fake_rt, n_posts_rt, ver_no_rt, 
+                             true_no_rt, fake_no_rt,
+                             n_posts_no_rt)
+    
+    write_xlsx(
+      coefs_perm, paste0("../../../../data/04-analysis/",country,
+                         "/",stage,"/original/", data_type, '/', type, 
+                         "baseline_next_nbase0.xlsx"))
+    ### 5.0 Run 1000 Permutations: 
+    
+    i <- 1
+    coefs_fin <- tibble()
+    for (m in 1:1000){
+      print(i)
+      followers <- read_parquet(paste0("../../../../data/04-analysis/joint/",
+                                       'small_ties_b1b2p', "/small_tie", 
+                                       i,".parquet"))
+      
+      data <- df
+      
+      c1 = paste0("n_influencers_followed_control_no_weak_tie_p", i)
+      c2 = paste0("n_influencers_followed_treatment_no_weak_tie_p", i)
+      c3 = paste0("n_influencers_followed_treatment_weak_tie_p", i)
+      c4 = paste0("n_influencers_followed_control_weak_tie_p", i)
+      c5 = paste0("n_influencers_followed_control_strong_tie_p", i)
+      c6 = paste0("n_influencers_followed_treatment_strong_tie_p", i)
+      c7 = paste0("n_influencers_followed_control_no_strong_tie_p", i)
+      c8 = paste0("n_influencers_followed_treatment_no_strong_tie_p", i)
+      c9 = paste0("n_influencers_followed_control_p", i)
+      c10 = paste0("n_influencers_followed_treatment_p", i)
+      c11 = paste0("n_influencers_followed_p_", i)
+      
+      followers_iter <- followers %>% select(follower_id, c1, c2, c3, c4, 
+                                             c5, c6, c7, c8, c9, c10, c11, pais, 
+                                             batch_id) 
+      
+      data <- left_join(
+        data, 
+        followers_iter,
+        by = c('follower_id', 'batch_id', 'pais')
+      )
+      # Pool treatment variables
+      data <- poolTreatmentBalance2(data, c10, c11)
+      
+      # Balance tables 
+      aux_data <- data[aux]
+      coefs_list <- list()
+      lm_list_ols <- list()
+      count <- 1
+      for (au in aux) {
+        fmla1 <- as.formula(paste0(au, "~ total_treated | total_influencers"))
+        nam1 <- paste("lm_", count, "_ols", sep = "")
+        assign(nam1, feols(fmla1, data = data))
+        coefs <- data.frame(coeftable(get(nam1, envir = globalenv()))) |> 
+          select(Estimate)
+        names(coefs) <- paste0(au)
+        coefs <- cbind('treatment' = rownames(coefs), coefs) |> 
+          filter(treatment != paste0(au, '_base'))
+        rownames(coefs) <- 1:nrow(coefs)
+        lm_list_ols[[count]] <- coefs
+        count <- count + 1
+      }
+      coefs_list <- append(coefs_list, lm_list_ols)
+      coefs_all <- coefs_list %>% reduce(left_join, by = "treatment")
+      
+      # Build matrix
+      ver_rt <- coefs_all %>% 
+        select(ends_with(aux[1]))
+      ver_rt <- ver_rt[1,]
+      
+      true_rt <- coefs_all %>% 
+        select(ends_with(aux[2]))
+      true_rt <- true_rt[1,] 
+      
+      fake_rt <- coefs_all %>% 
+        select(ends_with(aux[3]))
+      fake_rt <- fake_rt[1,]
+      
+      n_posts_rt <- coefs_all %>% 
+        select(ends_with(aux[4]))
+      n_posts_rt <- n_posts_rt[1,]
+      
+      ver_no_rt <- coefs_all %>% 
+        select(ends_with(aux[5]))
+      ver_no_rt <- ver_no_rt[1,]
+      
+      true_no_rt <- coefs_all %>% 
+        select(ends_with(aux[6]))
+      true_no_rt <- true_no_rt[1,]
+      
+      fake_no_rt <- coefs_all %>% 
+        select(ends_with(aux[7]))
+      fake_no_rt <- fake_no_rt[1,]
+      
+      n_posts_no_rt <- coefs_all %>% 
+        select(ends_with(aux[8]))
+      n_posts_no_rt <- n_posts_no_rt[1,]
+      
+      coefs_perm <- data.frame(ver_rt, true_rt, fake_rt, n_posts_rt, ver_no_rt,
+                               true_no_rt, fake_no_rt, 
+                               n_posts_no_rt)
+      
+      coefs_fin <- rbind(coefs_fin, coefs_perm)
+      
+      
+      i <- i + 1}
+    write_xlsx(coefs_fin, paste0("../../../../data/04-analysis/joint/", stage, 
+                                 "/permutations/", data_type, '/', type, 
+                                 "baseline_next_nbase0.xlsx"))
+  }
+
+# 6.0 Make the graphs
+
+file_code <- 'next_nbase0'
+ini <- '../../../../data/04-analysis/joint/'
+library(tidyverse)
+proc_coefs <- function(stage, file){
+  coef <- readxl::read_excel(paste0(ini, stage, '/original/', data_type, '/',
+                                    file, '.xlsx')) |>
+    pivot_longer(cols = everything(), names_to = 'var', values_to = 'coef') |> 
+    mutate(stage = stage)
+  return(coef)
+}
+
+proc_ses <- function(stage, file){
+  
+  perm <- readxl::read_excel(paste0(ini, stage, '/permutations/', data_type, '/',
+                                    file, '.xlsx')) |> 
+    summarise(across(everything(), ~sd(.x))) |> 
+    pivot_longer(cols = everything(), names_to = 'var', values_to = 'sd') |> 
+    mutate(stage = stage)
+  
+  return(perm)
+}
+
+for (type in list_types){
+  file_coefs <- paste0(type, file_code)
+  coefs <- c('stage5_6', 'stage3_4', 'stage1_2') |> 
+    map_dfr(~proc_coefs(.x, file_coefs))
+  ses <- c('stage5_6', 'stage3_4', 'stage1_2') |> 
+    map_dfr(~proc_ses(.x, file_coefs))
+  
+  final <- coefs |> left_join(ses, by = c('stage', 'var')) 
+  
+  if (type == 'log_'){
+    addon <- 'log '
+  } else if(type == 'arc_'){
+    addon <- 'arcsinh '
+  }else {
+    addon <- ''
+  }
+  
+  final <- final |> 
+    mutate(Variable = case_when(var == 'ver_rt' ~ paste0(addon, 'Verifiable RTs'),
+                                var == 'ver_no_rt' ~ paste0(addon, 
+                                                            'Verifiable Posts'),
+                                var == 'true_rt' ~ paste0(addon, 'True RTs'),
+                                var == 'true_no_rt' ~ paste0(addon, 'True Posts'),
+                                var == 'fake_rt' ~ paste0(addon, 'Fake RTs'),
+                                var == 'fake_no_rt' ~ paste0(addon, 'Fake Posts'),
+                                var == 'n_posts_rt' ~ paste0(addon, 
+                                                             'Number of RTs'),
+                                var == 'n_posts_no_rt' ~ paste0(addon, 
+                                                                'Number of Posts')),
+           Stage = case_when(stage == 'stage1_2' ~ 'Weeks 1-4',
+                             stage == 'stage3_4' ~ 'Weeks 5-8',
+                             stage == 'stage5_6' ~ 'Weeks 9-12'),
+           RT = ifelse(grepl('RTs', Variable, fixed = T) == T, 1, 0))
+  
+  final_rt <- final |> filter(RT == 1)
+  
+  results_plot <- ggplot(data = final_rt, aes(x = factor(Stage), y = coef)) + 
+    geom_point(aes(shape = factor(Variable), color = factor(Variable)), size = 3, 
+               position = position_dodge(width = 0.5)) +
+    geom_linerange(aes(ymin = coef - 1.96 * sd, ymax = coef + 1.96 * sd, 
+                       color = factor(Variable)),
+                   position = position_dodge(width = 0.5), size = 1) +
+    scale_shape_manual(values = c(15, 16, 17, 4), name = 'Outcome') +
+    scale_color_manual(values = rep('black', 4), name = 'Outcome') +
+    geom_hline(yintercept = 0, linetype = "solid", color = "black", size = .5) +  # Set custom fill colors for points # Set custom line colors for error bars
+    theme_bw() +  
+    ylab("Total Treated Estimate with 95% Confidence Interval") + 
+    xlab("Stage") +  # Change title color
+    #ggtitle("Dynamic Effects of the Intervention: Verifiability Analysis") +
+    theme(panel.grid.major = element_line(color = "gray", linetype = "dashed", size = 0.5),
+          panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1))
+  ggsave(results_plot, 
+         filename = paste0('../../../../results/01-regression_graphs/',
+                           data_type, '/', type, file_code, '_RT.pdf'), 
+         device = cairo_pdf, width = 8.22, height = 6.59, units = 'in')
+  
+  final_rt <- final |> filter(RT == 0)
+  
+  results_plot <- ggplot(data = final_rt, aes(x = factor(Stage), y = coef)) + 
+    geom_point(aes(shape = factor(Variable), color = factor(Variable)), size = 2.5, 
+               position = position_dodge(width = 0.5)) +
+    geom_linerange(aes(ymin = coef - 1.96 * sd, ymax = coef + 1.96 * sd, 
+                       color = factor(Variable)),
+                   position = position_dodge(width = 0.5), size = 1) +
+    scale_shape_manual(values = c(15, 16, 17, 4), name = 'Outcome') +
+    scale_color_manual(values = rep('black', 4), name = 'Outcome') +
+    geom_hline(yintercept = 0, linetype = "solid", color = "black", size = .5) +  # Set custom fill colors for points # Set custom line colors for error bars
+    theme_bw() +  
+    ylab("Total Treated Estimate with 95% Confidence Interval") + 
+    xlab("Stage") +  # Change title color
+    #ggtitle("Dynamic Effects of the Intervention: Verifiability Analysis") +
+    theme(panel.grid.major = element_line(color = "gray", linetype = "dashed", size = 0.5),
+          panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 45, hjust = 1))
+  ggsave(results_plot, 
+         filename = paste0('../../../../results/01-regression_graphs/', 
+                           data_type, '/', type, file_code, '_post.pdf'), 
+         device = cairo_pdf, width = 8.22, height = 6.59, units = 'in')
+}
+
+results_plot

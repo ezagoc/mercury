@@ -1,0 +1,228 @@
+# 0.0 Set up the environment, clean it and set working directory to the code path
+rm(list = ls())
+rstudioapi::getActiveDocumentContext
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+# 1.0 Import functions and packages
+library(purrr)
+src_path <- c("../../../../src/utils/")             
+source_files <- list(
+  "funcs.R",
+  "constants_final.R",
+  "import_data.R"
+)
+map(paste0(src_path, source_files), source)
+ipak(packages)
+`%!in%` = Negate(`%in%`)
+
+# 2.0 Define constants
+country <- 'joint'
+data_type <- 'Followers'
+file_code <- 'extensive'
+ini <- '../../../../data/04-analysis/joint/'
+
+blocks_ke <- read_parquet(paste0('../../../../data/04-analysis/KE/extensive_fixed_effects.parquet')) |>
+  select(follower_id, username_influencer = username, pais:block2_fe) |>
+  filter(batch_id == 'b1')
+
+blocks_sa <- read_parquet(paste0('../../../../data/04-analysis/SA/extensive_fixed_effects.parquet')) |>
+  select(follower_id, username_influencer = username, pais:block2_fe) |>
+  filter(batch_id == 'b1')
+
+blocks <- rbind(blocks_ke, blocks_sa)
+
+# 3.0 Import data and manipulate
+df <- get_analysis_followers(batches = 'b1b2', initial_path = '../../../../')
+
+df <- df |> filter(n_posts_base>0) |> 
+  filter(total_influencers == 1)
+
+means <- c(mean(df$AC), mean(df$SMIs, na.rm=T))
+
+df <- df |> left_join(blocks, by = c('follower_id', 'pais'))
+
+aux <- c('AC', 'SMIs')
+# 4.0 Run original estimates
+lm_list_ols <- list()
+count <- 1
+for (x in aux) {
+  if (x == 'AC'){
+    fmla1 <- as.formula(paste0(x, "~ total_treated + ",
+                               x, "_base ", "| block1_fe"))}
+  else {
+    fmla1 <- as.formula(paste0(x, "~ total_treated ", "| block1_fe"))
+  }
+  
+  nam1 <- paste("lm_", count, "_ols", sep = "")
+  assign(nam1, feols(fmla1, data = df))
+  coefs <- data.frame(coeftable(get(nam1, envir = globalenv()))) |> 
+    select(Estimate)
+  names(coefs) <- paste0(x)
+  coefs <- cbind('treatment' = rownames(coefs), coefs) |>
+    filter(treatment == 'total_treated')
+  rownames(coefs) <- 1:nrow(coefs)
+  lm_list_ols[[count]] <- coefs
+  count <- count + 1
+}
+coefs_all <- lm_list_ols %>% 
+  reduce(left_join, by = "treatment")
+
+# Build matrix
+ac <- coefs_all %>% 
+  select(ends_with(aux[1]))
+ac <- ac[1,]
+
+smi <- coefs_all %>% 
+  select(ends_with(aux[2]))
+smi <- smi[1,]
+
+coefs_perm <- data.frame(ac, smi)
+
+write_xlsx(
+  coefs_perm, paste0("../../../../data/04-analysis/",country,
+                     "/",data_type,"/original/", file_code,
+                     ".xlsx"))
+### 5.0 Run 1000 Permutations: 
+
+i <- 1
+coefs_fin <- tibble()
+for (m in 1:1000){
+  print(i) 
+  followers <- read_parquet(paste0("../../../../data/04-analysis/joint/",
+                                   'small_ties_b1b2p', "/small_tie", 
+                                   i,".parquet"))
+  
+  data <- df
+  
+  c1 = paste0("n_influencers_followed_control_no_weak_tie_p", i)
+  c2 = paste0("n_influencers_followed_treatment_no_weak_tie_p", i)
+  c3 = paste0("n_influencers_followed_treatment_weak_tie_p", i)
+  c4 = paste0("n_influencers_followed_control_weak_tie_p", i)
+  c5 = paste0("n_influencers_followed_control_strong_tie_p", i)
+  c6 = paste0("n_influencers_followed_treatment_strong_tie_p", i)
+  c7 = paste0("n_influencers_followed_control_no_strong_tie_p", i)
+  c8 = paste0("n_influencers_followed_treatment_no_strong_tie_p", i)
+  c9 = paste0("n_influencers_followed_control_p", i)
+  c10 = paste0("n_influencers_followed_treatment_p", i)
+  c11 = paste0("n_influencers_followed_p_", i)
+  
+  followers_iter <- followers %>% select(follower_id, c1, c2, c3, c4, 
+                                         c5, c6, c7, c8, c9, c10, c11, pais, 
+                                         batch_id)
+  followers_iter <- followers_iter |> filter(batch_id == 'b1')
+  
+  data <- left_join(
+    data, 
+    followers_iter,
+    by = c('follower_id', 'pais')
+  )
+  # Pool treatment variables
+  data <- poolTreatmentBalance2(data, c10, c11)
+  
+  # Balance tables 
+  aux_data <- data[aux]
+  coefs_list <- list()
+  lm_list_ols <- list()
+  count <- 1
+  for (au in aux) {
+    if (x == 'AC'){
+      fmla1 <- as.formula(paste0(au, "~ total_treated + ",
+                                 au, "_base ", "| block1_fe"))}
+    else {
+      fmla1 <- as.formula(paste0(au, "~ total_treated ", "| block1_fe"))
+    }
+    nam1 <- paste("lm_", count, "_ols", sep = "")
+    assign(nam1, feols(fmla1, data = data))
+    coefs <- data.frame(coeftable(get(nam1, envir = globalenv()))) |> 
+      select(Estimate)
+    names(coefs) <- paste0(au)
+    coefs <- cbind('treatment' = rownames(coefs), coefs) |> 
+      filter(treatment != paste0(au, '_base'))
+    rownames(coefs) <- 1:nrow(coefs)
+    lm_list_ols[[count]] <- coefs
+    count <- count + 1
+  }
+  coefs_list <- append(coefs_list, lm_list_ols)
+  coefs_all <- coefs_list %>% reduce(left_join, by = "treatment")
+  
+  # Build matrix
+  ac <- coefs_all %>% 
+    select(ends_with(aux[1]))
+  ac <- ac[1,]
+  
+  smi <- coefs_all %>% 
+    select(ends_with(aux[2]))
+  smi <- smi[1,]
+  
+  coefs_perm <- data.frame(ac, smi)
+  
+  coefs_fin <- rbind(coefs_fin, coefs_perm)
+  
+  
+  i <- i + 1}
+write_xlsx(coefs_fin, paste0("../../../../data/04-analysis/joint/", data_type,
+                             "/permutations/", file_code, ".xlsx"))
+
+
+coefs <- readxl::read_excel(paste0("../../../../data/04-analysis/",country,
+                                   "/",data_type,"/original/", file_code,
+                                   ".xlsx")) |>
+  pivot_longer(cols = everything(), names_to = 'var', values_to = 'coef')
+
+perm <- readxl::read_excel(paste0("../../../../data/04-analysis/joint/", data_type,
+                                  "/permutations/", file_code, ".xlsx")) |> 
+  summarise(across(everything(), ~sd(.x))) |> 
+  pivot_longer(cols = everything(), names_to = 'var', values_to = 'sd')
+
+final <- coefs |> left_join(perm, by = c( 'var'))
+
+ses <- final$sd
+
+ses <- paste(as.character(ses), collapse =" & ")
+
+count <- 1
+for (x in aux) {
+  if (x == 'AC'){
+    fmla1 <- as.formula(paste0(x, "~ total_treated + ",
+                               x, "_base ", "| block1_fe"))}
+  else {
+    fmla1 <- as.formula(paste0(x, "~ total_treated ", "| block1_fe"))
+  }
+  nam1 <- paste("lm_", count, "_ols", sep = "")
+  assign(nam1, felm(fmla1, data = df))
+  lm_list_ols[[count]] <- get(nam1, envir = globalenv())
+  count <- count + 1
+}
+
+table <- stargazer(
+  lm_list_ols, # robust standard errors
+  label = paste0("tab:followers_ac_ext"),
+  header = FALSE,
+  font.size = "scriptsize",
+  dep.var.caption = "",
+  dep.var.labels.include = FALSE,
+  table.placement = "!htpb",
+  column.labels = c('Follows Africa Check', 'Number of SMIs Followed'),
+  covariate.labels = c("Treated"),
+  keep = c('total_treated'),
+  omit.stat=c("f", "ser","adj.rsq"),
+  column.sep.width = "0pt",
+  add.lines = list(c("Baseline control", 'Yes', 'No'),
+                   c("Block1 FEs", rep("Yes", 2)), 
+                   c('Outcome mean', means)),
+  title = 'Extensive Margin Analysis',
+  type = "latex") 
+
+note.latex <- paste0("\\multicolumn{3}{l} {\\parbox[t]{9cm}{ \\textit{Notes:} Real SDs are ",ses, "
+This table presents the estimates from an extensive margin analysis. The dependent variables are a dummy indicating whether users
+followed Africa Check at the end of the intervention and the number of
+social media influencers (SMIs) they followed at the end of the intervention. The models control for whether users followed Africa Check at the
+beginning of the intervention and the number of SMIs they followed at
+the beginning. This analysis focuses exclusively on Batch 1 followers that follow only 1 influencer, as
+endpoint data for Batch 2 followers was unavailable. We do not consider followers that followed an influencer who got their account suspended.
+ * denotes p$<$0.1, ** denotes p$<$0.05, and *** denotes p$<$0.01.}} \\\\")
+table[grepl("Note", table)] <- note.latex
+print(table)
+cat(table, file = paste0("../../../../results/01-regression_graphs/",data_type,"/extensive.tex"))
+
+

@@ -1,0 +1,228 @@
+ERROR:root:Failed to retrieve tweets from JesseMasai
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\requests\models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "C:\Users\Dell\miniconda3\lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "C:\Users\Dell\miniconda3\lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "C:\Users\Dell\miniconda3\lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 476, in main
+    json_response = response.json()
+  File "C:\Users\Dell\miniconda3\lib\site-packages\requests\models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:root:Failed to retrieve tweets from LaurenMaeve
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\requests\models.py", line 971, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "C:\Users\Dell\miniconda3\lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "C:\Users\Dell\miniconda3\lib\json\decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "C:\Users\Dell\miniconda3\lib\json\decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 137, in call
+    json_response.update(response.json())
+  File "C:\Users\Dell\miniconda3\lib\site-packages\requests\models.py", line 975, in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+ERROR:root:Failed to retrieve tweets from IanmarkKimani
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+INFO:root:Done in 1297.9807395935059 seconds
+ERROR:root:Failed to retrieve tweets from Namritha_
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from PatrycjaOo
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from PaleighMM
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from klausvon
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from khulekanid1
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from DJJessicaKing
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from KatlehoMK
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from MagsSouthAfrica
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from Marcelloscherme
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from Moni_R
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from PatrycjaOo
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from Rato_K
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from RichardHardiman
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from ThusoTshiloane
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from alexmolteno
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from camerondjmc
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from judithsubban
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from mashaupfunzo
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from shude_zolile
+Traceback (most recent call last):
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "C:\Users\Dell\miniconda3\lib\site-packages\tweetple\TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+INFO:root:Done in 2644.2578852176666 seconds

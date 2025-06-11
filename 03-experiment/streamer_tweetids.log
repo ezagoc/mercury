@@ -1,0 +1,83 @@
+ERROR:root:Failed to retrieve tweets from j
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from _
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from b
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from a
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from r
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from r
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from t
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from i
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+ERROR:root:Failed to retrieve tweets from a
+Traceback (most recent call last):
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TweetPle.py", line 203, in streamer_handles
+    stat = GetTweetsFromUser(
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 478, in main
+    df = self.call(json_response, query, headers)
+  File "/Users/joaquinbarrutia/miniforge3/envs/env_tf/lib/python3.9/site-packages/tweetple/TwitterFullArchive.py", line 120, in call
+    df = json_normalize(json_response['data']).sort_index(axis=1)
+KeyError: 'data'
+INFO:root:Done in 15.034713983535767 seconds
+WARNING:tweepy.client:Unexpected parameter: exclude
